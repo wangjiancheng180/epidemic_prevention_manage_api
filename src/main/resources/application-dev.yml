@@ -1,0 +1,47 @@
+server:
+  port: 9001
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/epidemic_prevention_manage?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&&useUnicode=true
+    username: root
+    password: 123456
+  jackson:
+    date-format: yyyy-MM--dd HH:mm:ss
+    time-zone: GMT+8
+  security: #httpBasic()认证用户名和密码
+    user:
+      name: wjc
+      password: 123456
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  checkConfigLocation: true    #是否检查mapper.xml文件存在
+  global-config:
+    db-config:
+      id-type: auto           #id自增
+      field-strategy: ignored
+      column-like: true
+    refresh: true
+  configuration:
+    map-underscore-to-camel-case: true     #驼峰映射
+    cache-enabled: true
+    lazy-loading-enabled: false
+    multiple-result-sets-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl    #打印sql语句
+
+#开启swagger
+swagger2:
+  enable: true
+
+#token配置
+token:
+  header: Authorization #令牌自定义标识
+  secret: wjc-key #令牌密钥
+  expireTime: 30 #令牌有效期 默认30分钟
+
+
+
