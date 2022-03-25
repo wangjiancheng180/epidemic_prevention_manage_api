@@ -12,6 +12,7 @@ spring:
   jackson:
     date-format: yyyy-MM--dd HH:mm:ss
     time-zone: GMT+8
+
   security: #httpBasic()认证用户名和密码
     user:
       name: wjc

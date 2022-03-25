@@ -33,8 +33,7 @@ public class LoginController {
     @GetMapping("test")
     @ApiOperation("测试接口")
     public JsonResult test(){
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return JsonResult.success(bCryptPasswordEncoder.encode("123456"));
+      return JsonResult.success(new Date());
 
     }
 

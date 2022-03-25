@@ -1,6 +1,7 @@
 package com.wjc.config;
 
 
+import cn.hutool.json.JSONUtil;
 import com.wjc.common.JsonResult;
 import com.wjc.common.login.LoginUtil;
 import com.wjc.enetity.UserInfo;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +23,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -48,8 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private UserInfoService userInfoService;
+//    @Autowired
+//    private UserInfoService userInfoService;
 
     @Autowired
     private TokenUtils tokenUtils;
@@ -88,16 +93,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         };
     }
 
+    @Bean
+    public AuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
+        return daoAuthenticationProvider;
+    }
 
 
         @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         //springsecurity通过userDetailsService的loadUserByUsername方法
         //去数据库里查询用户并认证
-        auth.userDetailsService(userDetailsService)
-                //设置密码加密方式，默认为BCryptPasswordEncoder，也是springsecurity默认的密码加密方式
-                //这个必须要
-                .passwordEncoder(passwordEncoder());
+//        auth.userDetailsService(userDetailsService)
+//                //设置密码加密方式，默认为BCryptPasswordEncoder，也是springsecurity默认的密码加密方式
+//                //这个必须要
+//                .passwordEncoder(passwordEncoder());
+            auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     @Override
@@ -154,16 +168,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setCharacterEncoding("utf-8");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 //取出此时登录的用户名
-                String userName = authentication.getName();
-                UserInfo userInfo = userInfoService.findByUserName(userName);
+                String username = authentication.getName();
+//                UserInfo userInfo = userInfoService.findByUserName(userName);
                 Map<String,Object> claims = new HashMap<>();
-                claims.put("username",userInfo.getUsername() );
+                claims.put("username",username );
                 //生成token
                 String token = tokenUtils.createToken(claims);
                 httpServletResponse.addHeader(LoginUtil.AUTH,token);
                 PrintWriter writer = httpServletResponse.getWriter();
                 //将token包装到同一的返回结果类返回
-                writer.println(JsonResult.success(userInfo));
+                writer.println(JSONUtil.toJsonStr(JsonResult.success(username)));
                 //刷新确保成功响应
                 writer.flush();
                 writer.close();
@@ -182,7 +196,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setCharacterEncoding("utf-8");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 PrintWriter writer = httpServletResponse.getWriter();
-                writer.println(JsonResult.failure("登录失败"));
+                if(e.getClass().equals(UsernameNotFoundException.class)){
+                    //此时异常属于用户名不存在
+                    writer.println(JSONUtil.toJsonStr(JsonResult.failure("用户名不存在！")));
+                }else {
+                    //此时异常属于密码错误
+                    writer.println(JSONUtil.toJsonStr(JsonResult.failure("密码错误！")));
+                }
                 writer.flush();
                 writer.close();
             }
