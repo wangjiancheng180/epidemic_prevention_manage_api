@@ -60,6 +60,10 @@ public class JsonResult <T> implements Serializable {
         return new JsonResult(CODE_FAILURED,message,null);
     }
 
+    public static JsonResult failure(Integer code,String message) {
+        return new JsonResult(code,message,null);
+    }
+
     public static <T>  JsonResult<T>  failure(Integer code,String message,T data) {
         return new JsonResult(code,message,data);
     }

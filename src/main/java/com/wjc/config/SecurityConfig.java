@@ -174,10 +174,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 claims.put("username",username );
                 //生成token
                 String token = tokenUtils.createToken(claims);
-                httpServletResponse.addHeader(LoginUtil.AUTH,token);
+                httpServletResponse.setHeader(LoginUtil.AUTH,token);
                 PrintWriter writer = httpServletResponse.getWriter();
                 //将token包装到同一的返回结果类返回
-                writer.println(JSONUtil.toJsonStr(JsonResult.success(username)));
+                writer.println(JSONUtil.toJsonStr(JsonResult.success(LoginUtil.SUCCESS_LOGIN_CODE,username)));
                 //刷新确保成功响应
                 writer.flush();
                 writer.close();
@@ -198,10 +198,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 PrintWriter writer = httpServletResponse.getWriter();
                 if(e.getClass().equals(UsernameNotFoundException.class)){
                     //此时异常属于用户名不存在
-                    writer.println(JSONUtil.toJsonStr(JsonResult.failure("用户名不存在！")));
+                    writer.println(JSONUtil.toJsonStr(JsonResult.failure(LoginUtil.USERNAME_NOT_FOUND_CODE,"用户名不存在！")));
                 }else {
                     //此时异常属于密码错误
-                    writer.println(JSONUtil.toJsonStr(JsonResult.failure("密码错误！")));
+                    writer.println(JSONUtil.toJsonStr(JsonResult.failure(LoginUtil.PASSWORD_ERROR_CODE,"密码错误！")));
                 }
                 writer.flush();
                 writer.close();
@@ -233,15 +233,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
      */
     public AuthenticationEntryPoint AuthenticationEntryPoint(){
         return new AuthenticationEntryPoint(){
-
-
             @Override
             public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                //前后端分离项目 /login 可以是返回一个json字符串
                 httpServletResponse.setCharacterEncoding("utf-8");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 PrintWriter writer = httpServletResponse.getWriter();
-                writer.println(JsonResult.failure(401,"未登录！或登录失效请重新登录！",new UserInfo()));
+                writer.println(JsonResult.failure(LoginUtil.TOKEN_ERROR_CODE,"未登录！或登录失效请重新登录！"));
                 writer.flush();
                 writer.close();
             }
