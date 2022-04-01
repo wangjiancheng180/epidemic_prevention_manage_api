@@ -1,8 +1,9 @@
-package com.wjc.enetity;
+package com.wjc.enetity.system;
 
-import java.util.Date;
+
 import java.util.List;
 
+import com.wjc.enetity.BaseEnetity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,10 +18,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel("用户主题类")
-public class UserInfo {
+public class UserInfo extends BaseEnetity {
 
     @ApiModelProperty("用户id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty("用户名用来登录")
     private String username;
@@ -43,11 +44,6 @@ public class UserInfo {
     @ApiModelProperty("状态 1:启用 2：禁用")
     private Integer status;
 
-    @ApiModelProperty("创建时间")
-    private Date createTime;
-
-    @ApiModelProperty("更新时间")
-    private Date updateTime;
 
     @ApiModelProperty("角色列表")
     private List<Role> roles;

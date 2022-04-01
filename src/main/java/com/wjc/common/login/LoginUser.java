@@ -1,7 +1,7 @@
 package com.wjc.common.login;
 
-import com.wjc.enetity.Role;
-import com.wjc.enetity.UserInfo;
+import com.wjc.enetity.system.Role;
+import com.wjc.enetity.system.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

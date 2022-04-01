@@ -1,4 +1,4 @@
-package com.wjc.mapper;
+package com.wjc.mapper.system;
 
 /**
 * @author 王建成

@@ -1,4 +1,4 @@
-package com.wjc.service;
+package com.wjc.service.system;
 
 /**
 * @author 王建成

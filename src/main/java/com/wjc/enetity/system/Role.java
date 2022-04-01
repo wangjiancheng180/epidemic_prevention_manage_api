@@ -1,6 +1,8 @@
-package com.wjc.enetity;
+package com.wjc.enetity.system;
 
 import java.util.Date;
+
+import com.wjc.enetity.BaseEnetity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
-    private Integer id;
+public class Role extends BaseEnetity {
+    private Long id;
 
     /**
     * 角色名称 普通用户，超级管理员，运营人员
@@ -36,7 +38,4 @@ public class Role {
     */
     private String description;
 
-    private Date createTime;
-
-    private Date updateTime;
 }

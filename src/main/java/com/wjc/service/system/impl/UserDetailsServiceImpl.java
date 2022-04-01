@@ -1,9 +1,9 @@
-package com.wjc.service.impl;
+package com.wjc.service.system.impl;
 
 import com.wjc.common.login.LoginUser;
-import com.wjc.enetity.UserInfo;
+import com.wjc.enetity.system.UserInfo;
 
-import com.wjc.service.UserInfoService;
+import com.wjc.service.system.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

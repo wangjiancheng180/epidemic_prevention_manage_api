@@ -1,7 +1,7 @@
-package com.wjc.service;
+package com.wjc.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.wjc.enetity.UserInfo;
+import com.wjc.enetity.system.UserInfo;
 
 /**
  * @author 王建成

@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.TimeZone;
 
-@MapperScan(value = {"com.wjc.mapper"})
+@MapperScan(value = {"com.wjc.mapper.*"})
 @SpringBootApplication
 public class EpidemicPreventionManageApplication {
 

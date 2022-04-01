@@ -4,10 +4,8 @@ package com.wjc.config;
 import cn.hutool.json.JSONUtil;
 import com.wjc.common.JsonResult;
 import com.wjc.common.login.LoginUtil;
-import com.wjc.enetity.UserInfo;
 import com.wjc.filter.JwtAuthenticationFilter;
-import com.wjc.service.UserInfoService;
-import com.wjc.service.impl.UserDetailsServiceImpl;
+import com.wjc.service.system.impl.UserDetailsServiceImpl;
 import com.wjc.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +21,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,7 +43,7 @@ import java.util.Map;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)//开启注解标注 哪些方法需要鉴权 @PreAuthorize("hasRole('admin')") @PreAuthorize("hasAuthority('sys:user:save')")
+@EnableGlobalMethodSecurity(prePostEnabled = true)//开启注解标注 哪些方法需要鉴权 @PreAuthorize("hasRole('admin')") @PreAuthorize("hasAuthority('system:user:save')")
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     //实现了UserDetailsService的类

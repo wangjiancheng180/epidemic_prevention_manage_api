@@ -1,7 +1,7 @@
-package com.wjc.mapper;
+package com.wjc.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wjc.enetity.UserInfo;
+import com.wjc.enetity.system.UserInfo;
 import org.apache.ibatis.annotations.Param;
 
 

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjc.mapper.system.SysDicMapper">
+  <resultMap id="BaseResultMap" type="com.wjc.enetity.system.SysDic">
+    <!--@mbg.generated-->
+    <!--@Table sys_dic-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="dic_key" jdbcType="VARCHAR" property="dicKey" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, `name`, dic_key, remark, create_time, update_time, create_user_id, update_user_id, 
+    create_user_name, update_user_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dic
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from sys_dic
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wjc.enetity.system.SysDic" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into sys_dic (`name`, dic_key, remark, 
+      create_time, update_time, create_user_id, 
+      update_user_id, create_user_name, update_user_name
+      )
+    values (#{name,jdbcType=VARCHAR}, #{dicKey,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=BIGINT}, 
+      #{updateUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{updateUserName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wjc.enetity.system.SysDic" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into sys_dic
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="dicKey != null">
+        dic_key,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="createUserName != null">
+        create_user_name,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="dicKey != null">
+        #{dicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=BIGINT},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wjc.enetity.system.SysDic">
+    <!--@mbg.generated-->
+    update sys_dic
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="dicKey != null">
+        dic_key = #{dicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=BIGINT},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wjc.enetity.system.SysDic">
+    <!--@mbg.generated-->
+    update sys_dic
+    set `name` = #{name,jdbcType=VARCHAR},
+      dic_key = #{dicKey,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=BIGINT},
+      update_user_id = #{updateUserId,jdbcType=BIGINT},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
