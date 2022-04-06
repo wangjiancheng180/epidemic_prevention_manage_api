@@ -2,6 +2,7 @@ package com.wjc.service.system;
 
 import com.wjc.Dto.system.SysResourceTree;
 import com.wjc.enetity.system.SysResource;
+import com.wjc.param.system.SysResourceCreateBean;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface SysResourceService{
 
 
     List<SysResourceTree> queryResourceTree();
-    }
+
+    Long createResource(SysResourceCreateBean bean);
+}

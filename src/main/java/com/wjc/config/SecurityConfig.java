@@ -4,12 +4,15 @@ package com.wjc.config;
 import cn.hutool.json.JSONUtil;
 import com.wjc.common.JsonResult;
 import com.wjc.common.login.LoginUtil;
+import com.wjc.enetity.system.UserInfo;
 import com.wjc.filter.JwtAuthenticationFilter;
+import com.wjc.service.system.UserInfoService;
 import com.wjc.service.system.impl.UserDetailsServiceImpl;
 import com.wjc.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -50,11 +53,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-//    @Autowired
-//    private UserInfoService userInfoService;
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Autowired
     private TokenUtils tokenUtils;
+
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
 
 
 
@@ -63,7 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/swagger-ui.html",
             "/swagger-resources/**",
             "/webjars/**",
-            "/v2/**"
+            "/v2/**",
+            "/doc.html"
 
     };
 
@@ -166,7 +173,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 //取出此时登录的用户名
                 String username = authentication.getName();
-//                UserInfo userInfo = userInfoService.findByUserName(userName);
+                UserInfo userInfo = userInfoService.findByUserName(username);
+                redisTemplate.opsForHash().put("userinfo",userInfo.getUsername(),userInfo);
                 Map<String,Object> claims = new HashMap<>();
                 claims.put("username",username );
                 //生成token

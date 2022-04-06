@@ -4,10 +4,10 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wjc.Dto.system.SysResourceTree;
+import com.wjc.param.system.SysResourceCreateBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import com.wjc.enetity.system.SysResource;
 import com.wjc.mapper.system.SysResourceMapper;
 import com.wjc.service.system.SysResourceService;
@@ -38,6 +38,24 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
 
         resourceOnTree(treeRoot,list);
         return treeRoot;
+    }
+
+    @Override
+    public Long createResource(SysResourceCreateBean bean) {
+        SysResource sysResource = new SysResource();
+        sysResource.setParentId(bean.getParentId());
+        sysResource.setName(bean.getName());
+        sysResource.setLevel(bean.getLevel());
+        sysResource.setSort(bean.getSort());
+        sysResource.setSourceKey(bean.getSourceKey());
+        sysResource.setSourceUrl(bean.getSourceUrl());
+        sysResource.setCreateTime(bean.getCreateTime());
+        sysResource.setCreateUserId(bean.getCreateUserId());
+        sysResource.setCreateUserName(bean.getCreateUserName());
+        if (save(sysResource)){
+            return sysResource.getId();
+        }
+        return new Long(-1);
     }
 
     /**

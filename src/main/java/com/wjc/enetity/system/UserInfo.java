@@ -1,6 +1,7 @@
 package com.wjc.enetity.system;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.wjc.enetity.BaseEnetity;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel("用户主题类")
-public class UserInfo extends BaseEnetity {
+public class UserInfo extends BaseEnetity implements Serializable {
 
     @ApiModelProperty("用户id")
     private Long id;
