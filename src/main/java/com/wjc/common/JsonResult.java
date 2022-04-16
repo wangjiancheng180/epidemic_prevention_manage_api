@@ -67,4 +67,8 @@ public class JsonResult <T> implements Serializable {
     public static <T>  JsonResult<T>  failure(Integer code,String message,T data) {
         return new JsonResult(code,message,data);
     }
+
+    public static  <T> JsonResult<T> failure(String message,T data){
+        return new JsonResult(CODE_FAILURED,message,data);
+    }
 }

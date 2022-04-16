@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjc.mapper.system.SysResourceMapper">
+  <resultMap id="BaseResultMap" type="com.wjc.enetity.system.SysResource">
+    <!--@mbg.generated-->
+    <!--@Table sys_resource-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="source_key" jdbcType="VARCHAR" property="sourceKey" />
+    <result column="source_url" jdbcType="VARCHAR" property="sourceUrl" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="TIMESTAMP" property="updateUserName" />
+  </resultMap>
+    <delete id="removeRoleContactResource">
+      delete from role_relation_resource where resource_id = #{resource_id,jdbcType=BIGINT}
+    </delete>
+
+</mapper>

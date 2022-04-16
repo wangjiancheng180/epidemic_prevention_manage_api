@@ -3,8 +3,10 @@ package com.wjc.service.system.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wjc.Dto.system.SysResourceDto;
 import com.wjc.Dto.system.SysResourceTree;
 import com.wjc.param.system.SysResourceCreateBean;
+import com.wjc.param.system.SysResourceUpdateBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import com.wjc.mapper.system.SysResourceMapper;
 import com.wjc.service.system.SysResourceService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -58,6 +61,99 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
         return new Long(-1);
     }
 
+    @Override
+    public SysResourceDto queryResourceById(Long id) {
+//        LambdaQueryWrapper<SysResource> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(SysResource::getId,id);
+        SysResource resource = baseMapper.selectById(id);
+        if (resource==null){
+            return null;
+        }
+        SysResourceDto sysResourceDto = new SysResourceDto(resource.getId(), null,resource.getParentId(), resource.getLevel(), resource.getName(), resource.getSort(), resource.getSourceKey(), resource.getSourceUrl());
+        if (resource.getParentId()==0){
+            return sysResourceDto;
+        }
+        List<SysResource> list = list();
+
+        List<Long> parentIds = new ArrayList<>();
+        findParentIds(resource.getId(),list,parentIds);
+        //将父辈id全部倒序
+        Collections.reverse(parentIds);
+        //将父元素id集合放到返回对象中
+        sysResourceDto.setParentIds(parentIds);
+        return sysResourceDto;
+    }
+
+    @Override
+    public boolean updateResource(SysResourceUpdateBean bean) {
+        LambdaQueryWrapper<SysResource> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysResource::getId,bean.getId());
+        SysResource resource = new SysResource(bean.getId(), bean.getParentId(), bean.getLevel(), bean.getName(), bean.getSort(), bean.getSourceKey(), bean.getSourceUrl());
+        resource.setUpdateTime(bean.getUpdateTime());
+        resource.setUpdateUserId(bean.getUpdateUserId());
+        resource.setUpdateUserName(bean.getUpdateUserName());
+        if(update(resource,queryWrapper)){
+            //这里要更改子节点资源的的层级
+           SysResource sysResource = new SysResource();
+           //层级是被修改的父元素层级+1
+           sysResource.setLevel(bean.getLevel()+1);
+           update(sysResource,new LambdaQueryWrapper<SysResource>().eq(SysResource::getParentId,bean.getId()));
+        }
+        return true;
+    }
+
+
+
+    /**
+     * 寻找所有的父类id
+     * @param id
+     * @param list
+     * @param parentIds
+     */
+    @Override
+    public void findParentIds(Long id, List<SysResource> list, List<Long> parentIds) {
+
+        for (SysResource resource:list
+             ) {
+            if (resource.getId().equals(id)){
+                Long parentId = resource.getParentId();
+                //当父元素id是0就是顶级资源再没有父级资源直接return
+                if (parentId==0){
+                    return;
+                }
+                //将父元素id放进集合
+                parentIds.add(parentId);
+                //去寻找父元素的父id
+                findParentIds(parentId,list,parentIds);
+
+            }
+        }
+
+    }
+
+    @Override
+    public List<SysResource> resourceList() {
+        return list();
+    }
+
+    /**
+     * 转换树型结构
+     * @param resourceDto
+     * @return
+     */
+    @Override
+    public SysResourceTree toTree(SysResourceDto resourceDto) {
+        return new SysResourceTree(
+                resourceDto.getId(),
+                resourceDto.getLevel(),
+                resourceDto.getName(),
+                resourceDto.getSort(),
+                resourceDto.getSourceKey(),
+                resourceDto.getSourceUrl(),
+                null
+                );
+    }
+
     /**
      * 组装树
      * @param treeRoot 各个树的节点
@@ -69,6 +165,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
              ) {
             //这里给树新建一个子集
             tree.setChildren(new ArrayList<>());
+            //这里返回的是一个iterator是一个new出来的对象,所以每次的iteator对象都是不同的
             Iterator<SysResource> iterator = list.iterator();
             while (iterator.hasNext()){
                 //这里一定要用一个变量接收，iterator.next()会返回迭代器的下一个元素，并且更新迭代器的状态。
@@ -80,10 +177,14 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
                 }
 
         }
-            if (tree.getChildren().size()==0|| CollUtil.isEmpty(list)){
+            //list中的元素被取完了直接return
+            if (CollUtil.isEmpty(list)){
                 return;
             }
-            resourceOnTree(tree.getChildren(),list);
+            //只有树有子节点才能再去去寻找子节点
+            if (CollUtil.isNotEmpty(tree.getChildren())){
+                resourceOnTree(tree.getChildren(),list);
+            }
         }
     }
 
@@ -113,7 +214,8 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
      * @param resource
      * @return
      */
-    private SysResourceTree toTree(SysResource resource) {
+    @Override
+    public SysResourceTree toTree(SysResource resource) {
 
         return new SysResourceTree(
                 resource.getId(),
@@ -130,6 +232,39 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
                 resource.getCreateTime(),
                 resource.getUpdateTime()
                 );
+    }
+
+    @Override
+    public void combinationTree(List<SysResourceTree> resourceTrees, List<SysResourceDto> resourceDtos) {
+        List<SysResource> sysResources = new ArrayList<>();
+        for (SysResourceDto resourceDto : resourceDtos
+                ) {
+            sysResources.add(new SysResource(
+                    resourceDto.getId(),
+                    resourceDto.getParentId(),
+                    resourceDto.getLevel(),
+                    resourceDto.getName(),
+                    resourceDto.getSort(),
+                    resourceDto.getSourceKey(),
+                    resourceDto.getSourceUrl()
+                    ));
+        }
+        resourceOnTree(resourceTrees,sysResources);
+    }
+
+    @Override
+    public boolean deleteResource(Long id) {
+        //在删除前要先判断该资源是否有子资源，有的话不允许直接删除
+        LambdaQueryWrapper<SysResource> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysResource::getParentId,id);
+
+        List<SysResource> list = list(queryWrapper);
+        if (CollUtil.isNotEmpty(list)){
+            return false;
+        }
+        //第一步要将角色关联资源的信息删除
+        sysResourceMapper.removeRoleContactResource(id);
+        return removeById(id);
     }
 
 }
