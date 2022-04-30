@@ -3,8 +3,8 @@ package com.wjc.service.system.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wjc.Dto.system.SysResourceDto;
-import com.wjc.Dto.system.SysResourceTree;
+import com.wjc.dto.system.SysResourceDto;
+import com.wjc.dto.system.SysResourceTree;
 import com.wjc.param.system.SysResourceCreateBean;
 import com.wjc.param.system.SysResourceUpdateBean;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +14,7 @@ import com.wjc.enetity.system.SysResource;
 import com.wjc.mapper.system.SysResourceMapper;
 import com.wjc.service.system.SysResourceService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
 * @author 王建成
@@ -50,6 +47,8 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
         sysResource.setName(bean.getName());
         sysResource.setLevel(bean.getLevel());
         sysResource.setSort(bean.getSort());
+        sysResource.setType(bean.getType());
+        sysResource.setIcon(bean.getIcon());
         sysResource.setSourceKey(bean.getSourceKey());
         sysResource.setSourceUrl(bean.getSourceUrl());
         sysResource.setCreateTime(bean.getCreateTime());
@@ -69,7 +68,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
         if (resource==null){
             return null;
         }
-        SysResourceDto sysResourceDto = new SysResourceDto(resource.getId(), null,resource.getParentId(), resource.getLevel(), resource.getName(), resource.getSort(), resource.getSourceKey(), resource.getSourceUrl());
+        SysResourceDto sysResourceDto = new SysResourceDto(resource.getId(), null,resource.getParentId(), resource.getLevel(), resource.getName(), resource.getSort(),resource.getType(), resource.getIcon(),resource.getSourceKey(), resource.getSourceUrl());
         if (resource.getParentId()==0){
             return sysResourceDto;
         }
@@ -88,7 +87,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
     public boolean updateResource(SysResourceUpdateBean bean) {
         LambdaQueryWrapper<SysResource> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysResource::getId,bean.getId());
-        SysResource resource = new SysResource(bean.getId(), bean.getParentId(), bean.getLevel(), bean.getName(), bean.getSort(), bean.getSourceKey(), bean.getSourceUrl());
+        SysResource resource = new SysResource(bean.getId(), bean.getParentId(), bean.getLevel(), bean.getName(),bean.getType(), bean.getIcon(),bean.getSort(), bean.getSourceKey(), bean.getSourceUrl());
         resource.setUpdateTime(bean.getUpdateTime());
         resource.setUpdateUserId(bean.getUpdateUserId());
         resource.setUpdateUserName(bean.getUpdateUserName());
@@ -148,6 +147,8 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
                 resourceDto.getLevel(),
                 resourceDto.getName(),
                 resourceDto.getSort(),
+                resourceDto.getType(),
+                resourceDto.getIcon(),
                 resourceDto.getSourceKey(),
                 resourceDto.getSourceUrl(),
                 null
@@ -209,6 +210,20 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
         return trees;
     }
 
+    public List<SysResourceTree> findTreeRoot(Set<SysResourceDto> resourceDtos){
+        List<SysResourceTree> trees = new ArrayList<>();
+        Iterator<SysResourceDto> iterator = resourceDtos.iterator();
+        while (iterator.hasNext()){
+           SysResourceDto sysResourceDto = iterator.next();
+            if(sysResourceDto.getParentId()==0){
+                trees.add(toTree(sysResourceDto));
+                //放进树里的就删掉
+                iterator.remove();
+            }
+        }
+        return trees;
+    }
+
     /**
      * resource转换成树结构
      * @param resource
@@ -222,6 +237,8 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
                 resource.getLevel(),
                 resource.getName(),
                 resource.getSort(),
+                resource.getType(),
+                resource.getIcon(),
                 resource.getSourceKey(),
                 resource.getSourceUrl(),
                null,
@@ -244,12 +261,43 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper,SysRes
                     resourceDto.getParentId(),
                     resourceDto.getLevel(),
                     resourceDto.getName(),
+                    resourceDto.getType(),
+                    resourceDto.getIcon(),
                     resourceDto.getSort(),
                     resourceDto.getSourceKey(),
                     resourceDto.getSourceUrl()
                     ));
         }
         resourceOnTree(resourceTrees,sysResources);
+    }
+
+    @Override
+    public List<SysResourceTree> combinationTree(Set<SysResourceDto> resourceDtos) {
+
+        List<SysResourceTree> trees = findTreeRoot(resourceDtos);
+        resourceDtoOnTree(trees,resourceDtos);
+        return trees;
+    }
+
+    private void resourceDtoOnTree(List<SysResourceTree> trees, Set<SysResourceDto> resourceDtos) {
+        for (SysResourceTree tree:trees
+             ) {
+            List<SysResourceTree> childern = new ArrayList<>();
+            Iterator<SysResourceDto> iterator = resourceDtos.iterator();
+            while (iterator.hasNext()){
+                SysResourceDto resourceDto = iterator.next();
+                if (resourceDto.getParentId().equals(tree.getId())){
+                   childern.add(toTree(resourceDto));
+                }
+            }
+            tree.setChildren(childern);
+            if (CollUtil.isEmpty(resourceDtos)){
+                break;
+            }
+            if (CollUtil.isNotEmpty(childern)){
+                resourceDtoOnTree(childern,resourceDtos);
+            }
+        }
     }
 
     @Override

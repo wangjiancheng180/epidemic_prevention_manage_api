@@ -1,10 +1,11 @@
-package com.wjc.Dto.system;
+package com.wjc.dto.system;
 
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class SysResourceDto {
 
     @ApiModelProperty("资源id")
@@ -40,6 +42,15 @@ public class SysResourceDto {
 
     @ApiModelProperty("排序")
     private Integer sort;
+
+    /**
+     * 类型 1：菜单 2：按钮
+     */
+    @ApiModelProperty("类型 1：菜单 2：按钮")
+    private Integer type;
+
+    @ApiModelProperty("图标")
+    private String icon;
 
     @ApiModelProperty("资源key")
     private String sourceKey;

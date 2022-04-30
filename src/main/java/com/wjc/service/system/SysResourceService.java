@@ -1,12 +1,14 @@
 package com.wjc.service.system;
 
-import com.wjc.Dto.system.SysResourceDto;
-import com.wjc.Dto.system.SysResourceTree;
+import com.wjc.dto.system.SysResourceDto;
+import com.wjc.dto.system.SysResourceTree;
 import com.wjc.enetity.system.SysResource;
 import com.wjc.param.system.SysResourceCreateBean;
 import com.wjc.param.system.SysResourceUpdateBean;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
 * @author 王建成
@@ -32,6 +34,8 @@ public interface SysResourceService{
     SysResourceTree toTree(SysResource resource);
 
     void combinationTree(List<SysResourceTree> resourceTrees, List<SysResourceDto> resourceDtos);
+
+    List<SysResourceTree> combinationTree(Set<SysResourceDto> resourceDtos);
 
     boolean deleteResource(Long id);
 }

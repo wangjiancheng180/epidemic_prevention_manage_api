@@ -1,6 +1,7 @@
 package com.wjc.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wjc.dto.system.UserInfoDto;
 import com.wjc.enetity.system.UserInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,4 +13,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
     UserInfo findByUserName(@Param("userName") String userName);
+
+    UserInfoDto queryByUsername(@Param("userName") String username);
 }

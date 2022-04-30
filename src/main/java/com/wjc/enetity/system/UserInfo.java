@@ -33,6 +33,9 @@ public class UserInfo extends BaseEnetity implements Serializable {
     @ApiModelProperty("真实姓名")
     private String realName;
 
+    @ApiModelProperty("性别，002：男，003：女")
+    private String sex;
+
     @ApiModelProperty("手机号码")
     private String phone;
 

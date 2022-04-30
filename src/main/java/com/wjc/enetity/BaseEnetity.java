@@ -2,6 +2,7 @@ package com.wjc.enetity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Date;
  * @date 2022/3/31--10:19
  */
 @Data
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseEnetity {

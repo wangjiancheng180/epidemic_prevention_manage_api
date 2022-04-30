@@ -1,6 +1,7 @@
-package com.wjc.Dto.system;
+package com.wjc.dto.system;
 
 import com.wjc.enetity.BaseEnetity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,18 +27,32 @@ public class SysResourceTree extends BaseEnetity {
 
     private Integer sort;
 
+    /**
+     * 类型 1：菜单 2：按钮
+     */
+    @ApiModelProperty("类型 1：菜单 2：按钮")
+    private Integer type;
+
+    @ApiModelProperty("图标")
+    private String icon;
+
+
     private String sourceKey;
 
     private String sourceUrl;
 
     private List<SysResourceTree> children;
 
-    public SysResourceTree( Long id, Integer level, String name, Integer sort, String sourceKey, String sourceUrl, List<SysResourceTree> children,Long createUserId, Long updateUserId, String createUserName, String updateUserName, Date createTime, Date updateTime) {
+
+
+    public SysResourceTree( Long id, Integer level, String name, Integer sort,Integer type, String icon,String sourceKey, String sourceUrl, List<SysResourceTree> children,Long createUserId, Long updateUserId, String createUserName, String updateUserName, Date createTime, Date updateTime) {
         super(createUserId, updateUserId, createUserName, updateUserName, createTime, updateTime);
         this.id = id;
         this.level = level;
         this.name = name;
         this.sort = sort;
+        this.type = type;
+        this.icon = icon;
         this.sourceKey = sourceKey;
         this.sourceUrl = sourceUrl;
         this.children = children;

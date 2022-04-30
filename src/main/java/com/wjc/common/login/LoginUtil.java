@@ -23,5 +23,4 @@ public class LoginUtil {
    public static int TOKEN_ERROR_CODE= 4;
 
 
-
 }

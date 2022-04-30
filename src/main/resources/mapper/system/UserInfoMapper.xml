@@ -5,6 +5,7 @@
         <id property="id" column="id"/>
         <result property="username" column="user_name"/>
         <result property="nickName" column="nick_name"/>
+        <result property="sex" column="sex"/>
         <result property="realName" column="real_name"/>
         <result property="password" column="password"/>
         <result property="phone" column="phone"/>
@@ -12,6 +13,7 @@
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
         <collection property="roles" ofType="com.wjc.enetity.system.Role">
+            <id property="id" column="role_id"/>
             <result property="name" column="role_name"/>
             <result property="roleKey" column="role_key"/>
             <result property="status" column="role_status"/>
@@ -20,12 +22,37 @@
             <result property="updateTime" column="role_update_time"/>
         </collection>
     </resultMap>
+
+    <resultMap id="userInfoDto" type="com.wjc.dto.system.UserInfoDto">
+        <id property="id" column="id"/>
+        <result property="username" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="sex" column="sex"/>
+        <result property="realName" column="real_name"/>
+        <result property="password" column="password"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <collection property="roleDtos" ofType="com.wjc.dto.system.SysRoleDto">
+            <id property="id" column="role_id"/>
+            <result property="name" column="role_name"/>
+            <result property="roleKey" column="role_key"/>
+            <result property="status" column="role_status"/>
+            <result property="description" column="description"/>
+        </collection>
+    </resultMap>
     <select id="findByUserName" resultMap="userInfo">
-     select u.*,r.name role_name,r.role_key,r.status role_status,
+     select u.*,r.id role_id,r.name role_name,r.role_key,r.status role_status,
         r.description,r.create_time role_create_time,r.update_time role_update_time from user_info u
      inner join user_info_relation_role ur on u.id = ur.user_info_id
      inner join role r on r.id = ur.role_id
      where u.user_name = #{userName,jdbcType=VARCHAR}
 
+    </select>
+    <select id="queryByUsername" resultMap="userInfoDto">
+        select u.*,r.id role_id,r.name role_name,r.role_key,r.status role_status,
+        r.description from user_info u
+        left join user_info_relation_role ur on u.id = ur.user_info_id
+        left join role r on r.id = ur.role_id
+        where u.user_name = #{userName,jdbcType=VARCHAR}
     </select>
 </mapper>

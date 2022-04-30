@@ -1,5 +1,7 @@
 package com.wjc.enetity.system;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.wjc.enetity.BaseEnetity;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysResource extends BaseEnetity {
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     private Long parentId;
@@ -26,6 +29,15 @@ public class SysResource extends BaseEnetity {
     private Integer level;
 
     private String name;
+    /**
+     * 类型 1：菜单 2：按钮
+     */
+    private Integer type;
+
+    /**
+     * 图标
+     */
+    private String icon;
 
     private Integer sort;
 

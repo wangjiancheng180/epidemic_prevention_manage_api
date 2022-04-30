@@ -1,4 +1,4 @@
-package com.wjc.Dto.system;
+package com.wjc.dto.system;
 
 
 import io.swagger.annotations.ApiModel;

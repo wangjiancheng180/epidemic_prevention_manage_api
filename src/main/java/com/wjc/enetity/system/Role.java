@@ -2,6 +2,8 @@ package com.wjc.enetity.system;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.wjc.enetity.BaseEnetity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel("角色基础返回类")
 public class Role extends BaseEnetity {
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("id")
     private Long id;
 

@@ -1,5 +1,7 @@
 package com.wjc.controller;
 
+import com.wjc.common.login.RedisKey;
+import com.wjc.dto.system.UserInfoDto;
 import com.wjc.enetity.system.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,10 +16,10 @@ public class BaseController {
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
-   public UserInfo getUserInfo(){
+   public UserInfoDto getUserInfo(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-       UserInfo userinfo = (UserInfo) redisTemplate.opsForHash().get("userinfo", principal);
+       UserInfoDto userinfo = (UserInfoDto) redisTemplate.opsForHash().get(RedisKey.USER_INFO, principal);
        return userinfo;
    }
 }

@@ -1,10 +1,10 @@
 package com.wjc.controller.system;
 
-import com.wjc.Dto.system.SysRoleDto;
+import com.wjc.dto.system.SysRoleDto;
 import com.wjc.common.JsonResult;
 import com.wjc.controller.BaseController;
+import com.wjc.dto.system.UserInfoDto;
 import com.wjc.enetity.system.Role;
-import com.wjc.enetity.system.UserInfo;
 import com.wjc.param.system.SysRoleCreateBean;
 import com.wjc.param.system.SysRoleUpdateBean;
 import com.wjc.service.system.RoleService;
@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2022/4/12--9:49
  */
 @RestController
-@Api("角色管理")
+@Api(tags = "角色管理")
 @ApiOperation("角色管理")
 @RequestMapping("/role")
 public class SysRoleController extends BaseController {
@@ -38,7 +38,7 @@ public class SysRoleController extends BaseController {
     @PostMapping("/createRole")
     @ApiOperation("创建角色")
     public JsonResult<Long> createRole(@RequestBody SysRoleCreateBean bean){
-        UserInfo userInfo = getUserInfo();
+        UserInfoDto userInfo = getUserInfo();
         bean.setCreateUserId(userInfo.getId());
         bean.setCreateUserName(userInfo.getRealName());
         bean.setCreateTime(new Date(System.currentTimeMillis()));
@@ -53,7 +53,7 @@ public class SysRoleController extends BaseController {
     @PostMapping("/updateRole")
     @ApiOperation("更新角色")
     public JsonResult<Boolean> updateRole(@RequestBody  SysRoleUpdateBean bean){
-        UserInfo userInfo = getUserInfo();
+        UserInfoDto userInfo = getUserInfo();
         bean.setUpdateUserId(userInfo.getId());
         bean.setUpdateUserName(userInfo.getRealName());
         bean.setUpdateTime(new Date(System.currentTimeMillis()));

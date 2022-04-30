@@ -1,7 +1,7 @@
 package com.wjc.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wjc.Dto.system.SysRoleDto;
+import com.wjc.dto.system.SysRoleDto;
 import com.wjc.enetity.system.Role;
 import org.apache.ibatis.annotations.Param;
 

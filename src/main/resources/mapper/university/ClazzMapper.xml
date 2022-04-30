@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjc.mapper.university.ClazzMapper">
+  <resultMap id="ClazzDto" type="com.wjc.dto.university.ClazzDto">
+    <!--@mbg.generated-->
+    <!--@Table clazz-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sort" jdbcType="BOOLEAN" property="sort" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <collection property="collegeDtos" ofType="com.wjc.dto.university.CollegeDto">
+      <id column="college_id" property="id"/>
+      <result column="college_name" property="name"/>
+    </collection>
+    <collection property="collegeIds" ofType="java.lang.Long">
+      <id column="college_id"/>
+    </collection>
+  </resultMap>
+
+
+    <select id="queryClazzList"  resultMap="ClazzDto">
+      select cz.*,c.id college_id,c.name college_name from clazz cz
+      inner join college_relation_clazz crc on crc.clazz_id = cz.id
+      inner join college c on crc.college_id = c.id
+      order by cz.id,c.level
+    </select>
+
+  <select id="queryClazzById" resultMap="ClazzDto">
+      select cz.*,c.id college_id,c.name college_name from clazz cz
+      inner join college_relation_clazz crc on crc.clazz_id = cz.id
+      inner join college c on crc.college_id = c.id
+      where cz.id = #{id}
+      order by  c.level
+  </select>
+
+  <insert id="addRelationCollege">
+    insert into college_relation_clazz (clazz_id,college_id)  values
+    <foreach collection="collegeIds" item="item" separator=",">
+      (#{clazzId},#{item})
+    </foreach>
+  </insert>
+
+  <delete id="deleteRelationCollege">
+    delete from college_relation_clazz where clazz_id = #{clazzId}
+  </delete>
+
+  <select id="countStudent" resultType="int">
+    select count(1) from clazz_relation_student where clazz_id = #{clazzId}
+  </select>
+
+    <select id="queryClazzPage" resultType="com.wjc.dto.university.ClazzDto">
+      select cz.* from clazz cz
+      where cz.id in
+        <foreach collection="clazzDtos" item="clazz" open="(" separator="," close=")">
+          #{clazz.id}
+        </foreach>
+      order by cz.sort
+    </select>
+
+  <select id="queryClazzPageF" resultMap="ClazzDto">
+    select cz.*,c.id college_id,c.name college_name from clazz cz
+    inner join college_relation_clazz crc on crc.clazz_id = cz.id
+    inner join college c on crc.college_id = c.id
+    <where>
+      <if test="bean.name != null and bean.name != ''">
+        cz.name like  CONCAT('%',#{bean.name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="bean.collegeId != null and bean.collegeId &gt; 0">
+        and c.id = #{bean.collegeId}
+      </if>
+    </where>
+      order by cz.sort,c.level
+  </select>
+
+
+</mapper>

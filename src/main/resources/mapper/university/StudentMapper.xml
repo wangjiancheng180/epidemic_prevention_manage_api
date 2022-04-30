@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjc.mapper.university.StudentMapper">
+  <resultMap id="StudentDtoMap" type="com.wjc.dto.university.StudentDto">
+    <!--@mbg.generated-->
+    <!--@Table student-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="student_no" jdbcType="VARCHAR" property="studentNo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="health_code" jdbcType="VARCHAR" property="healthCode" />
+    <result column="vaccination_ record" jdbcType="VARCHAR" property="vaccinationRecord" />
+    <result column="trave_card" jdbcType="VARCHAR" property="traveCard" />
+    <result column="vaccination_times" jdbcType="BOOLEAN" property="vaccinationTimes" />
+    <result column="temporary_home" jdbcType="VARCHAR" property="temporaryHome" />
+    <result column="hometown" jdbcType="VARCHAR" property="hometown" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="entrance" property="entrance"/>
+    <result column="birthday" property="birthday"/>
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <association property="clazzDto" javaType="com.wjc.dto.university.ClazzDto">
+      <id column="clazz_id" property="id"/>
+      <result column="clazz_name" property="name"/>
+      <collection property="collegeDtos" ofType="com.wjc.dto.university.CollegeDto">
+        <id column="college_id" property="id"/>
+        <result column="college_name" property="name"/>
+      </collection>
+      <collection property="collegeIds" ofType="java.lang.Long">
+        <id column="college_id"/>
+      </collection>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, student_no, `name`, sex, age, health_code, `vaccination_ record`, trave_card, 
+    vaccination_times, temporary_home, hometown, account, `password`, create_user_id, 
+    create_user_name, create_time, update_user_id, update_user_name, update_time
+  </sql>
+
+  <select id="queryStudentList" resultMap="StudentDtoMap">
+    select s.*,cz.id clazz_id,cz.name clazz_name,c.id college_id,c.name college_name from student s
+    left join clazz_relation_student crs on crs.student_id = s.id
+    left join clazz cz on crs.clazz_id = cz.id
+    left join college_relation_clazz crc on crc.clazz_id = cz.id
+    left join college c on crc.college_id = c.id
+    order by s.id,c.level
+  </select>
+
+  <select id="queryStudentPage" resultType="com.wjc.dto.university.StudentDto">
+    select * from student
+    where id in
+    <foreach collection="studentDtos" item="item" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+    order by id
+  </select>
+
+  <select id="queryStudentById" resultMap="StudentDtoMap">
+    select s.*,cz.id clazz_id,cz.name clazz_name,c.id college_id,c.name college_name from student s
+    left join clazz_relation_student crs on crs.student_id = s.id
+    left join clazz cz on crs.clazz_id = cz.id
+    left join college_relation_clazz crc on crc.clazz_id = cz.id
+    left join college c on crc.college_id = c.id
+    order by c.level
+    where s.id = #{id}
+  </select>
+
+  <insert id="addRelationClazz">
+    insert into clazz_relation_student(clazz_id,student_id) values(#{clazzId},#{studentId})
+  </insert>
+
+  <delete id="deleteRelationClazz">
+    delete from clazz_relation_student where student_id = #{studentId}
+  </delete>
+
+  <select id="queryStudentPageF" resultMap="StudentDtoMap">
+    select s.*,cz.id clazz_id,cz.name clazz_name,c.id college_id,c.name college_name from student s
+    left join clazz_relation_student crs on crs.student_id = s.id
+    left join clazz cz on crs.clazz_id = cz.id
+    left join college_relation_clazz crc on crc.clazz_id = cz.id
+    left join college c on crc.college_id = c.id
+    <where>
+      <if test="bean.studentNo!=null and bean.studentNo!=''">
+        s.student_no like CONCAT('%',#{bean.studentNo},'%')
+      </if>
+      <if test="bean.name!=null and bean.name!=''">
+        and s.name like CONCAT('%',#{bean.name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="bean.sex!=null and bean.sex!=''">
+        and s.sex = #{bean.sex,jdbcType=VARCHAR}
+      </if>
+      <if test="bean.age!=null and bean.age &gt; 0">
+        and bean.age = #{bean.age}
+      </if>
+    </where>
+    order by s.id,c.level
+  </select>
+
+
+</mapper>

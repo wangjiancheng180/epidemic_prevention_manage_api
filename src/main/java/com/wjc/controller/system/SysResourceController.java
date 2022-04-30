@@ -1,11 +1,10 @@
 package com.wjc.controller.system;
 
-import cn.hutool.core.date.DateUtil;
-import com.wjc.Dto.system.SysResourceDto;
-import com.wjc.Dto.system.SysResourceTree;
+import com.wjc.dto.system.SysResourceDto;
+import com.wjc.dto.system.SysResourceTree;
 import com.wjc.common.JsonResult;
 import com.wjc.controller.BaseController;
-import com.wjc.enetity.system.SysResource;
+import com.wjc.dto.system.UserInfoDto;
 import com.wjc.enetity.system.UserInfo;
 import com.wjc.param.system.SysResourceCreateBean;
 import com.wjc.param.system.SysResourceUpdateBean;
@@ -13,11 +12,8 @@ import com.wjc.service.system.SysResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Security;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +40,7 @@ public class SysResourceController extends BaseController {
     @PostMapping("/createResource")
     @ApiOperation("新建资源")
     public JsonResult<Long> createResource(@RequestBody SysResourceCreateBean bean){
-        UserInfo userInfo = getUserInfo();
+        UserInfoDto userInfo = getUserInfo();
         bean.setCreateUserId(userInfo.getId());
         bean.setCreateUserName(userInfo.getRealName());
         bean.setCreateTime(new Date(System.currentTimeMillis()));
@@ -69,7 +65,7 @@ public class SysResourceController extends BaseController {
     @PostMapping("/updateResource")
     @ApiOperation("新建资源")
     public JsonResult<Boolean> updateResource(@RequestBody SysResourceUpdateBean bean){
-        UserInfo userInfo = getUserInfo();
+        UserInfoDto userInfo = getUserInfo();
         bean.setUpdateUserId(userInfo.getId());
         bean.setUpdateUserName(userInfo.getRealName());
         bean.setUpdateTime(new Date(System.currentTimeMillis()));

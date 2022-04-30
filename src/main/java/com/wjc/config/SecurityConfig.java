@@ -4,7 +4,8 @@ package com.wjc.config;
 import cn.hutool.json.JSONUtil;
 import com.wjc.common.JsonResult;
 import com.wjc.common.login.LoginUtil;
-import com.wjc.enetity.system.UserInfo;
+import com.wjc.common.login.RedisKey;
+import com.wjc.dto.system.UserInfoDto;
 import com.wjc.filter.JwtAuthenticationFilter;
 import com.wjc.service.system.UserInfoService;
 import com.wjc.service.system.impl.UserDetailsServiceImpl;
@@ -173,8 +174,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 //取出此时登录的用户名
                 String username = authentication.getName();
-                UserInfo userInfo = userInfoService.findByUserName(username);
-                redisTemplate.opsForHash().put("userinfo",userInfo.getUsername(),userInfo);
+                UserInfoDto userInfoDto = (UserInfoDto) redisTemplate.opsForHash().get(RedisKey.USER_INFO, username);
+                if (userInfoDto == null){
+                    userInfoDto = userInfoService.queryByUsername(username);
+                }
+                //这里需要将密码置空
+                userInfoDto.setPassword(null);
                 Map<String,Object> claims = new HashMap<>();
                 claims.put("username",username );
                 //生成token
@@ -182,7 +187,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setHeader(LoginUtil.AUTH,token);
                 PrintWriter writer = httpServletResponse.getWriter();
                 //将token包装到同一的返回结果类返回
-                writer.println(JSONUtil.toJsonStr(JsonResult.success(LoginUtil.SUCCESS_LOGIN_CODE,username)));
+                writer.println(JSONUtil.toJsonStr(JsonResult.success(LoginUtil.SUCCESS_LOGIN_CODE,userInfoDto)));
                 //刷新确保成功响应
                 writer.flush();
                 writer.close();

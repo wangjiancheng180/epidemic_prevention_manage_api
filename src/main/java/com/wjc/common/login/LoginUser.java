@@ -1,5 +1,7 @@
 package com.wjc.common.login;
 
+import com.wjc.dto.system.SysRoleDto;
+import com.wjc.dto.system.UserInfoDto;
 import com.wjc.enetity.system.Role;
 import com.wjc.enetity.system.UserInfo;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
 
-    private UserInfo userInfo;
+    private UserInfoDto userInfo;
 
     /**
      * 返回该账号下的所有权限信息
@@ -31,7 +33,7 @@ public class LoginUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Role role:userInfo.getRoles()){
+        for (SysRoleDto role:userInfo.getRoleDtos()){
             //每个权限标识前面要有ROLE_
             authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getRoleKey()));
         }
