@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 王建成
@@ -100,6 +101,15 @@ public class StudentDto extends BaseEnetity {
     @ApiModelProperty("出生日期")
     private Date birthday;
 
-    @ApiModelProperty("班级信息")
+    @ApiModelProperty("所在班级信息")
     private ClazzDto clazzDto;
+
+    @ApiModelProperty("所属学院信息")
+    private List<CollegeDto> collegeDtos;
+
+    @ApiModelProperty("所关联学院Id")
+    private List<Long> collegeIds;
+
+    @ApiModelProperty("所在班级Id")
+    private Long clazzId;
 }

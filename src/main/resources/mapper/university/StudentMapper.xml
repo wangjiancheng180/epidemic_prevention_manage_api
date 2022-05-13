@@ -19,6 +19,7 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="entrance" property="entrance"/>
     <result column="birthday" property="birthday"/>
+    <result column="clazz_id" property="clazzId"/>
     <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -28,14 +29,14 @@
     <association property="clazzDto" javaType="com.wjc.dto.university.ClazzDto">
       <id column="clazz_id" property="id"/>
       <result column="clazz_name" property="name"/>
-      <collection property="collegeDtos" ofType="com.wjc.dto.university.CollegeDto">
-        <id column="college_id" property="id"/>
-        <result column="college_name" property="name"/>
-      </collection>
-      <collection property="collegeIds" ofType="java.lang.Long">
-        <id column="college_id"/>
-      </collection>
     </association>
+    <collection property="collegeDtos" ofType="com.wjc.dto.university.CollegeDto">
+      <id column="college_id" property="id"/>
+      <result column="college_name" property="name"/>
+    </collection>
+    <collection property="collegeIds" ofType="java.lang.Long">
+      <id column="college_id"/>
+    </collection>
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
@@ -55,10 +56,12 @@
 
   <select id="queryStudentPage" resultType="com.wjc.dto.university.StudentDto">
     select * from student
-    where id in
-    <foreach collection="studentDtos" item="item" open="(" separator="," close=")">
-      #{item.id}
-    </foreach>
+    <if test="studentDtos != null and studentDtos.size() &gt; 0">
+      where id in
+      <foreach collection="studentDtos" item="item" open="(" separator="," close=")">
+        #{item.id}
+      </foreach>
+    </if>
     order by id
   </select>
 
@@ -68,8 +71,8 @@
     left join clazz cz on crs.clazz_id = cz.id
     left join college_relation_clazz crc on crc.clazz_id = cz.id
     left join college c on crc.college_id = c.id
-    order by c.level
     where s.id = #{id}
+    order by c.level
   </select>
 
   <insert id="addRelationClazz">
@@ -97,7 +100,16 @@
         and s.sex = #{bean.sex,jdbcType=VARCHAR}
       </if>
       <if test="bean.age!=null and bean.age &gt; 0">
-        and bean.age = #{bean.age}
+        and s.age = #{bean.age}
+      </if>
+      <if test="bean.vaccinationTimes!=null">
+        and s.vaccination_times =#{bean.vaccinationTimes}
+      </if>
+      <if test="bean.collegeId != null and bean.collegeId &gt; 0">
+        and c.id = #{bean.collegeId}
+      </if>
+      <if test="bean.clazzId != null and  bean.clazzId &gt; 0">
+        and cz.id = #{bean.clazzId}
       </if>
     </where>
     order by s.id,c.level

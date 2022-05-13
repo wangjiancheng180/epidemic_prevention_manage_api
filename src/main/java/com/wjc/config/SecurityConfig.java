@@ -71,7 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/swagger-resources/**",
             "/webjars/**",
             "/v2/**",
-            "/doc.html"
+            "/doc.html",
+            "/trail/simulation"
 
     };
 
@@ -249,7 +250,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setCharacterEncoding("utf-8");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 PrintWriter writer = httpServletResponse.getWriter();
-                writer.println(JsonResult.failure(LoginUtil.TOKEN_ERROR_CODE,"未登录！或登录失效请重新登录！"));
+                writer.println(JSONUtil.toJsonStr(JsonResult.failure(LoginUtil.TOKEN_ERROR_CODE,"未登录！或登录失效请重新登录！")));
                 writer.flush();
                 writer.close();
             }

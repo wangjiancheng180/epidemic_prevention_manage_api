@@ -72,7 +72,11 @@ public class StudentController extends BaseController {
     @DeleteMapping("/deleteStudent")
     @ApiOperation("删除学生")
     public JsonResult<Boolean> deleteStudent(@RequestParam("id") Long id){
-        return JsonResult.success(studentService.deleteStudent(id));
+        boolean flag = studentService.deleteStudent(id);
+        if(flag){
+            return JsonResult.success(true);
+        }
+        return JsonResult.failure("该学生已经不存在了,请刷新页面",false);
     }
 
 //    @DeleteMapping("/deleteStudentByIds")
@@ -80,4 +84,5 @@ public class StudentController extends BaseController {
 //    public JsonResult<Boolean> deleteStudentByIds(@RequestBody Set<Long> ids){
 //
 //    }
+
 }

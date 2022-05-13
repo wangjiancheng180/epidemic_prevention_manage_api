@@ -24,6 +24,11 @@ spring:
         min-idle: 0
     lettuce:
       shutdown-timeout: 0ms
+  influx:
+    url: http://127.0.0.1:8086
+    user: root
+    password: root
+    database: epidemic_prevention
 
 
 

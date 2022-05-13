@@ -1,6 +1,7 @@
 package com.wjc.param.university;
 
 import com.wjc.common.PageRequestInfo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,13 @@ public class StudentQueryBean extends PageRequestInfo {
     @ApiModelProperty("年龄")
     private Integer age;
 
+    @ApiModelProperty("关联学院id")
+    private  Long collegeId;
 
+    @ApiModelProperty("关联班级Id")
+    private Long clazzId;
+
+    @ApiModelProperty("疫苗接种情况，0：未接种，1：已接种但为接种完成，2：已完成接种，3:完成加强针")
+    private Integer vaccinationTimes;
 
 }

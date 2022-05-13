@@ -1,5 +1,6 @@
 package com.wjc.service.university.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -39,6 +40,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         IPage<StudentDto> pageInfo = new Page<>(bean.getPage(),bean.getSize());
         //TODO:继续曲线救国
         List<StudentDto> studentDtos = studentMapper.queryStudentPageF(bean);
+        if (CollUtil.isEmpty(studentDtos)){
+            //筛选出来是空值的话直接返回
+            return pageInfo;
+        }
         IPage<StudentDto> studentPage = studentMapper.queryStudentPage(studentDtos, pageInfo);
 
         for (StudentDto record:studentPage.getRecords()
@@ -47,6 +52,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
                  ) {
                 if(record.getId().equals(studentDto.getId())){
                     record.setClazzDto(studentDto.getClazzDto());
+                    record.setCollegeDtos(studentDto.getCollegeDtos());
                     break;
                 }
             }
@@ -66,6 +72,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         student.setName(bean.getName());
         student.setSex(bean.getSex());
         student.setAge(bean.getAge());
+        student.setVaccinationTimes(bean.getVaccinationTimes());
         student.setTemporaryHome(bean.getTemporaryHome());
         student.setHometown(bean.getHometown());
         student.setAccount(bean.getAccount());
@@ -91,6 +98,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
         student.setName(bean.getName());
         student.setSex(bean.getSex());
         student.setAge(bean.getAge());
+        student.setVaccinationTimes(bean.getVaccinationTimes());
         student.setTemporaryHome(bean.getTemporaryHome());
         student.setHometown(bean.getHometown());
         student.setAccount(bean.getAccount());
@@ -112,6 +120,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper,Student> imple
 
     @Override
     public boolean deleteStudent(Long id) {
+        StudentDto studentDto = queryStudentById(id);
+        //先要判断是否存在改学生
+        if(studentDto==null){
+            return false;
+        }
         //先删除学生与班级的联系
         studentMapper.deleteRelationClazz(id);
         return removeById(id);
