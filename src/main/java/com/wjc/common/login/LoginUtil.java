@@ -22,5 +22,8 @@ public class LoginUtil {
    //token异常
    public static int TOKEN_ERROR_CODE= 4;
 
+   //权限不足
+   public static int PERMISSONS_ERROR_CODE = 5;
+
 
 }

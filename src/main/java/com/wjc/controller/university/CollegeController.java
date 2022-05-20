@@ -2,7 +2,7 @@ package com.wjc.controller.university;
 
 import com.wjc.common.JsonResult;
 import com.wjc.controller.BaseController;
-import com.wjc.dto.system.UserInfoDto;
+
 import com.wjc.dto.university.CollegeDto;
 import com.wjc.dto.university.CollegeTree;
 import com.wjc.param.university.CollegeCreateBean;
@@ -43,20 +43,14 @@ public class CollegeController extends BaseController {
     @PostMapping("/createCollege")
     @ApiOperation("新建学院")
     public JsonResult<Long> createCollege(@RequestBody CollegeCreateBean bean){
-        UserInfoDto userInfo = getUserInfo();
-        bean.setCreateUserId(userInfo.getId());
-        bean.setCreateUserName(userInfo.getRealName());
-        bean.setCreateTime(new Date(System.currentTimeMillis()));
+        setCreate(bean);
         return JsonResult.success(collegeService.createCollege(bean));
     }
 
     @PostMapping("/updateCollege")
     @ApiOperation("修改学院")
     public JsonResult<Boolean> updateCollege(@RequestBody CollegeCreateBean  bean){
-        UserInfoDto userInfo = getUserInfo();
-        bean.setUpdateUserId(userInfo.getId());
-        bean.setUpdateUserName(userInfo.getRealName());
-        bean.setUpdateTime(new Date(System.currentTimeMillis()));
+        setUpdate(bean);
         return JsonResult.success(collegeService.updateCollege(bean));
     }
 

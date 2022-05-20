@@ -86,4 +86,16 @@ public class Student extends BaseEnetity {
      * 出生日期
      */
     private Date birthday;
+
+    public Student(String studentNo, String name, String sex,int vaccinationTimes,String temporaryHome,String hometown,Date entrance,Date birthday,Long createUserId, String createUserName,  Date createTime) {
+        super(createUserId,createUserName,createTime);
+        this.studentNo = studentNo;
+        this.name = name;
+        this.sex = sex;
+        this.vaccinationTimes =vaccinationTimes;
+        this.temporaryHome = temporaryHome;
+        this.hometown = hometown;
+        this.entrance = entrance;
+        this.birthday = birthday;
+    }
 }

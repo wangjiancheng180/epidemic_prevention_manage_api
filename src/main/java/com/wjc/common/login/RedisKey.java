@@ -8,4 +8,8 @@ public class RedisKey {
 
     //存储登录用户信息
     public static String USER_INFO = "user";
+
+
+    //存储用户权限资源信息
+    public static  String AUTHIRITY = "authority";
 }

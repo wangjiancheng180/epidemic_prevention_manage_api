@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.wjc.common.JsonResult;
 import com.wjc.common.login.LoginUtil;
 import com.wjc.common.login.RedisKey;
-import com.wjc.dto.system.UserInfoDto;
+import com.wjc.dto.system.AuthInfo;
 import com.wjc.filter.JwtAuthenticationFilter;
 import com.wjc.service.system.UserInfoService;
 import com.wjc.service.system.impl.UserDetailsServiceImpl;
@@ -175,12 +175,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 //取出此时登录的用户名
                 String username = authentication.getName();
-                UserInfoDto userInfoDto = (UserInfoDto) redisTemplate.opsForHash().get(RedisKey.USER_INFO, username);
-                if (userInfoDto == null){
-                    userInfoDto = userInfoService.queryByUsername(username);
+                AuthInfo authInfo = (AuthInfo) redisTemplate.opsForHash().get(RedisKey.USER_INFO, username);
+                if (authInfo == null){
+                    authInfo = userInfoService.queryByUsername(username);
                 }
                 //这里需要将密码置空
-                userInfoDto.setPassword(null);
+//                authInfo.setPassword(null);
                 Map<String,Object> claims = new HashMap<>();
                 claims.put("username",username );
                 //生成token
@@ -188,7 +188,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setHeader(LoginUtil.AUTH,token);
                 PrintWriter writer = httpServletResponse.getWriter();
                 //将token包装到同一的返回结果类返回
-                writer.println(JSONUtil.toJsonStr(JsonResult.success(LoginUtil.SUCCESS_LOGIN_CODE,userInfoDto)));
+                writer.println(JSONUtil.toJsonStr(JsonResult.success(LoginUtil.SUCCESS_LOGIN_CODE,authInfo)));
                 //刷新确保成功响应
                 writer.flush();
                 writer.close();
@@ -231,7 +231,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setCharacterEncoding("utf-8");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 PrintWriter writer = httpServletResponse.getWriter();
-                writer.println(JsonResult.failure("权限不足"));
+                writer.println(JSONUtil.toJsonStr(JsonResult.failure(LoginUtil.PERMISSONS_ERROR_CODE,"权限不足")));
                 writer.flush();
                 writer.close();
             }

@@ -102,6 +102,7 @@ public class StudentDto extends BaseEnetity {
     private Date birthday;
 
     @ApiModelProperty("所在班级信息")
+
     private ClazzDto clazzDto;
 
     @ApiModelProperty("所属学院信息")

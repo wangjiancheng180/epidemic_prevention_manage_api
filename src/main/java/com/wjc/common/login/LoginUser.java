@@ -1,19 +1,26 @@
 package com.wjc.common.login;
 
+import cn.hutool.system.UserInfo;
 import com.wjc.dto.system.SysRoleDto;
-import com.wjc.dto.system.UserInfoDto;
+import com.wjc.dto.system.AuthInfo;
 import com.wjc.enetity.system.Role;
-import com.wjc.enetity.system.UserInfo;
+import com.wjc.enetity.system.SysResource;
+import com.wjc.service.system.UserInfoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 王建成
@@ -22,9 +29,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Component
 public class LoginUser implements UserDetails {
 
-    private UserInfoDto userInfo;
+    private AuthInfo userInfo;
+
+
 
     /**
      * 返回该账号下的所有权限信息
@@ -32,12 +42,13 @@ public class LoginUser implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (SysRoleDto role:userInfo.getRoleDtos()){
-            //每个权限标识前面要有ROLE_
-            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getRoleKey()));
-        }
-        return authorities;
+//        List<GrantedAuthority> authorities = new ArrayList<>();
+//        for (SysRoleDto role:userInfo.getRoleDtos()){
+//            //每个权限标识前面要有ROLE_
+//            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getRoleKey()));
+//        }
+
+        return AuthorityUtils.commaSeparatedStringToAuthorityList(userInfo.getAuthorities());
     }
 
     @Override

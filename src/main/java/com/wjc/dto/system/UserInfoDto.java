@@ -1,22 +1,21 @@
 package com.wjc.dto.system;
 
+import com.wjc.enetity.BaseEnetity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /**
  * @author 王建成
- * @date 2022/4/19--10:57
+ * @date 2022/5/18--17:31
  */
-@ApiModel("用户类")
+@ApiModel("用户信息")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserInfoDto {
+public class UserInfoDto extends BaseEnetity {
+
     @ApiModelProperty("用户id")
     private Long id;
 
@@ -35,8 +34,8 @@ public class UserInfoDto {
     @ApiModelProperty("手机号码")
     private String phone;
 
-    @ApiModelProperty("密码")
-    private String password;
+//    @ApiModelProperty("密码")
+//    private String password;
 
     /**
      * 1:启用，2禁用
@@ -47,7 +46,6 @@ public class UserInfoDto {
     @ApiModelProperty("用户角色")
     private List<SysRoleDto> roleDtos;
 
-    @ApiModelProperty("用户所有资源")
-    private List<SysResourceTree> resourceTrees;
-
+//    @ApiModelProperty("角色id")
+//    private List<Long> roleIds;
 }

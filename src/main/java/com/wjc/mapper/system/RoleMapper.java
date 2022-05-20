@@ -32,4 +32,6 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @return
      */
     SysRoleDto queryRoleById(@Param("roleId") Long roleId);
+
+    int countUser(@Param("roleId") Long roleId);
 }

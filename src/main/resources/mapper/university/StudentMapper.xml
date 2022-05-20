@@ -78,6 +78,12 @@
   <insert id="addRelationClazz">
     insert into clazz_relation_student(clazz_id,student_id) values(#{clazzId},#{studentId})
   </insert>
+  <insert id="saveStudentRelationClazzBatch">
+    insert  into clazz_relation_student(student_id,clazz_id) values
+    <foreach collection="students" item="item" index="index" separator=",">
+      (#{item.id},${clazzIds.get(index)})
+    </foreach>
+  </insert>
 
   <delete id="deleteRelationClazz">
     delete from clazz_relation_student where student_id = #{studentId}

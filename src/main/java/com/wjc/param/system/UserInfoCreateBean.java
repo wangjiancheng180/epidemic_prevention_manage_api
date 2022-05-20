@@ -1,30 +1,21 @@
-package com.wjc.enetity.system;
+package com.wjc.param.system;
 
-
-import java.io.Serializable;
-import java.util.List;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.wjc.enetity.BaseEnetity;
+import com.wjc.enetity.system.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
-* @author 王建成
-* @date 2022/3/16--22:37
-*/     
+ * @author 王建成
+ * @date 2022/5/18--15:21
+ */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@ApiModel("用户主题类")
-public class UserInfo extends BaseEnetity implements Serializable {
-
+@ApiModel("用户创建类")
+public class UserInfoCreateBean extends BaseEnetity {
     @ApiModelProperty("用户id")
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty("用户名用来登录")
@@ -46,12 +37,12 @@ public class UserInfo extends BaseEnetity implements Serializable {
     private String password;
 
     /**
-    * 1:启用，2禁用
-    */
+     * 1:启用，2禁用
+     */
     @ApiModelProperty("状态 1:启用 2：禁用")
     private Integer status;
 
-//
-//    @ApiModelProperty("角色列表")
-//    private List<Role> roles;
+
+    @ApiModelProperty("关联角色")
+    private List<Long> roleIds;
 }

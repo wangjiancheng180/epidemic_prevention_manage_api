@@ -27,4 +27,10 @@ public class BaseEnetity {
 
     private Date updateTime;
 
+    public BaseEnetity(Long createUserId, String createUserName,  Date createTime) {
+        this.createUserId = createUserId;
+        this.createUserName = createUserName;
+        this.createTime = createTime;
+
+    }
 }

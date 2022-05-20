@@ -3,7 +3,7 @@ package com.wjc.controller.university;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wjc.common.JsonResult;
 import com.wjc.controller.BaseController;
-import com.wjc.dto.system.UserInfoDto;
+
 import com.wjc.dto.university.StudentDto;
 import com.wjc.param.university.StudentCreateBean;
 import com.wjc.param.university.StudentQueryBean;
@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -52,21 +52,24 @@ public class StudentController extends BaseController {
     @PostMapping("/createStudent")
     @ApiOperation("新建学生")
     public JsonResult<Boolean> createStudent(@RequestBody StudentCreateBean bean){
-        UserInfoDto userInfo = getUserInfo();
-        bean.setCreateUserId(userInfo.getId());
-        bean.setCreateUserName(userInfo.getRealName());
-        bean.setCreateTime(new Date(System.currentTimeMillis()));
-        return JsonResult.success(studentService.createStudent(bean));
+        setCreate(bean);
+        boolean flag = studentService.createStudent(bean);
+        if (flag){
+            return JsonResult.success(true);
+        }
+        return JsonResult.failure("学号重复！",false);
+
     }
 
     @PostMapping("/updateStudent")
     @ApiOperation("更新学生")
     public JsonResult<Boolean> updateStudent(@RequestBody StudentCreateBean bean){
-        UserInfoDto userInfo = getUserInfo();
-        bean.setUpdateUserId(userInfo.getId());
-        bean.setUpdateUserName(userInfo.getRealName());
-        bean.setUpdateTime(new Date(System.currentTimeMillis()));
-        return JsonResult.success(studentService.updateStudent(bean));
+        setUpdate(bean);
+        boolean flag = studentService.updateStudent(bean);
+        if (flag){
+            return JsonResult.success(true);
+        }
+        return JsonResult.failure("不存在该学生或学号重复！",false);
     }
 
     @DeleteMapping("/deleteStudent")
@@ -76,7 +79,7 @@ public class StudentController extends BaseController {
         if(flag){
             return JsonResult.success(true);
         }
-        return JsonResult.failure("该学生已经不存在了,请刷新页面",false);
+        return JsonResult.failure("不存在该学生！",false);
     }
 
 //    @DeleteMapping("/deleteStudentByIds")

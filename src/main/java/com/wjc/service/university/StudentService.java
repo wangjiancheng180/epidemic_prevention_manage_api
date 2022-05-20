@@ -2,6 +2,8 @@ package com.wjc.service.university;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wjc.dto.university.StudentDto;
+import com.wjc.enetity.university.Student;
+import com.wjc.excel.data.university.StudentData;
 import com.wjc.param.university.StudentCreateBean;
 import com.wjc.param.university.StudentQueryBean;
 
@@ -26,4 +28,8 @@ public interface StudentService{
     boolean updateStudent(StudentCreateBean bean);
 
     boolean deleteStudent(Long id);
+
+    List<StudentData> getStudentData(StudentQueryBean bean);
+
+    void saveDataBatch(List<StudentData> cachedDataList);
 }

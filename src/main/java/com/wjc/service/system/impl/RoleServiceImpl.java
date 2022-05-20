@@ -10,6 +10,7 @@ import com.wjc.enetity.system.SysResource;
 import com.wjc.param.system.SysRoleCreateBean;
 import com.wjc.param.system.SysRoleUpdateBean;
 import com.wjc.service.system.SysResourceService;
+import com.wjc.service.system.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.wjc.mapper.system.RoleMapper;
@@ -29,6 +30,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper,Role> implements Rol
 
     @Autowired
     private SysResourceService resourceService;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
 
     @Override
@@ -71,6 +75,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper,Role> implements Rol
             roleMapper.removeRoleContactResource(role.getId());
             //重新添加关联资源信息
             roleMapper.contactResourceIds(role.getId(),bean.getResourceIds());
+
+            userInfoService.updteByRoleId(role.getId());
             return true;
         }
         return false;
@@ -128,8 +134,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper,Role> implements Rol
 
     @Override
     public boolean deleteRole(Long id) {
+        int count = roleMapper.countUser(id);
+        if (count>0){
+            return false;
+        }
         //先删除关联的资源
         roleMapper.removeRoleContactResource(id);
+
         return removeById(id);
     }
 

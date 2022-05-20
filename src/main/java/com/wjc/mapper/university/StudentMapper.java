@@ -3,6 +3,7 @@ package com.wjc.mapper.university;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wjc.dto.university.StudentDto;
+import com.wjc.enetity.university.Clazz;
 import com.wjc.enetity.university.Student;
 import com.wjc.param.university.StudentQueryBean;
 import org.apache.ibatis.annotations.Param;
@@ -56,4 +57,5 @@ public interface StudentMapper extends BaseMapper<Student> {
      */
     List<StudentDto> queryStudentPageF(@Param("bean") StudentQueryBean bean);
 
+    void saveStudentRelationClazzBatch(@Param("students") List<Student> students, @Param("clazzIds") List<Long> clazzIds);
 }

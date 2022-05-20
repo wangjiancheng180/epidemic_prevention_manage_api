@@ -1,11 +1,17 @@
 package com.wjc.controller;
 
 import com.wjc.common.login.RedisKey;
-import com.wjc.dto.system.UserInfoDto;
+import com.wjc.dto.system.AuthInfo;
+import com.wjc.enetity.BaseEnetity;
 import com.wjc.enetity.system.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
 
 /**
  * @author 王建成
@@ -16,10 +22,36 @@ public class BaseController {
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
-   public UserInfoDto getUserInfo(){
+   public AuthInfo getUserInfo(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-       UserInfoDto userinfo = (UserInfoDto) redisTemplate.opsForHash().get(RedisKey.USER_INFO, principal);
+       AuthInfo userinfo = (AuthInfo) redisTemplate.opsForHash().get(RedisKey.USER_INFO, principal);
        return userinfo;
    }
+
+   public void setCreate(BaseEnetity bean){
+       AuthInfo userInfo = getUserInfo();
+       bean.setCreateUserId(userInfo.getId());
+       bean.setCreateUserName(userInfo.getRealName());
+       bean.setCreateTime(new Date());
+   }
+
+   public void setUpdate(BaseEnetity bean){
+       AuthInfo userInfo = getUserInfo();
+       bean.setUpdateUserId(userInfo.getId());
+       bean.setUpdateUserName(userInfo.getRealName());
+       bean.setUpdateTime(new Date());
+   }
+
+    /**
+     * 设置excel下载响应头属性
+     */
+    public void setExcelRespProp(HttpServletResponse response, String rawFileName) throws UnsupportedEncodingException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode(rawFileName , "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=" + fileName + ".xlsx");
+        response.setHeader("Access-Control-Expose-Headers","Content-disposition");
+    }
+
 }

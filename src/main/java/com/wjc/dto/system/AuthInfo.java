@@ -1,30 +1,24 @@
-package com.wjc.enetity.system;
+package com.wjc.dto.system;
 
-
-import java.io.Serializable;
-import java.util.List;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.wjc.enetity.BaseEnetity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 /**
-* @author 王建成
-* @date 2022/3/16--22:37
-*/     
+ * @author 王建成
+ * @date 2022/4/19--10:57
+ */
+@ApiModel("用户类")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel("用户主题类")
-public class UserInfo extends BaseEnetity implements Serializable {
-
+public class AuthInfo {
     @ApiModelProperty("用户id")
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty("用户名用来登录")
@@ -46,12 +40,20 @@ public class UserInfo extends BaseEnetity implements Serializable {
     private String password;
 
     /**
-    * 1:启用，2禁用
-    */
+     * 1:启用，2禁用
+     */
     @ApiModelProperty("状态 1:启用 2：禁用")
     private Integer status;
 
-//
-//    @ApiModelProperty("角色列表")
-//    private List<Role> roles;
+    @ApiModelProperty("用户角色")
+    private List<SysRoleDto> roleDtos;
+
+    @ApiModelProperty("用户所有资源")
+    private List<SysResourceTree> resourceTrees;
+
+    @ApiModelProperty("权限资源")
+    private Set<SysResourceDto> resourceDtos;
+
+    @ApiModelProperty("权限信息")
+    private String authorities;
 }

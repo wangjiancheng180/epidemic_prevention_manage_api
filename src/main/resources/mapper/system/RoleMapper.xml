@@ -37,4 +37,7 @@
         left join sys_resource res  on res.id = r.resource_id
         where ro.id = #{roleId,jdbcType=BIGINT}
     </select>
+    <select id="countUser" resultType="int">
+        select count(1) from user_info_relation_role where role_id = #{roleId,jdbcType=BIGINT}
+    </select>
 </mapper>

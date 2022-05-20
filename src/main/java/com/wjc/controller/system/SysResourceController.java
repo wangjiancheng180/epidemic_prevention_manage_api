@@ -4,14 +4,13 @@ import com.wjc.dto.system.SysResourceDto;
 import com.wjc.dto.system.SysResourceTree;
 import com.wjc.common.JsonResult;
 import com.wjc.controller.BaseController;
-import com.wjc.dto.system.UserInfoDto;
-import com.wjc.enetity.system.UserInfo;
 import com.wjc.param.system.SysResourceCreateBean;
 import com.wjc.param.system.SysResourceUpdateBean;
 import com.wjc.service.system.SysResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -30,23 +29,24 @@ public class SysResourceController extends BaseController {
     @Autowired
     private SysResourceService  resourceService;
 
+
     @GetMapping("/queryResourceTree")
+    @PreAuthorize("hasRole('super_admin')||hasAuthority('queryResource')")
     @ApiOperation("获取资源树")
     public JsonResult<List<SysResourceTree>> queryResourceTree(){
 
         return JsonResult.success(resourceService.queryResourceTree());
     }
 
+    @PreAuthorize("hasRole('super_admin')||hasAuthority('createResource')")
     @PostMapping("/createResource")
     @ApiOperation("新建资源")
     public JsonResult<Long> createResource(@RequestBody SysResourceCreateBean bean){
-        UserInfoDto userInfo = getUserInfo();
-        bean.setCreateUserId(userInfo.getId());
-        bean.setCreateUserName(userInfo.getRealName());
-        bean.setCreateTime(new Date(System.currentTimeMillis()));
+        setCreate(bean);
         return JsonResult.success(resourceService.createResource(bean));
     }
 
+    @PreAuthorize("hasRole('super_admin')||hasAuthority('deleteResource')")
     @DeleteMapping("/deleteResource")
     public JsonResult<Boolean> deleteResource(@RequestParam("id") Long id){
         boolean result = resourceService.deleteResource(id);
@@ -57,18 +57,17 @@ public class SysResourceController extends BaseController {
     }
 
     @GetMapping("/queryResourceById")
+    @PreAuthorize("hasRole('super_admin')|| hasAuthority('queryResource')" )
     @ApiOperation("查找资源")
     public JsonResult<SysResourceDto> queryResourceById(@RequestParam("id") Long id){
         return JsonResult.success(resourceService.queryResourceById(id));
     }
 
     @PostMapping("/updateResource")
-    @ApiOperation("新建资源")
+    @PreAuthorize("hasRole('super_admin')||hasAuthority('updateResource')")
+    @ApiOperation("更新资源")
     public JsonResult<Boolean> updateResource(@RequestBody SysResourceUpdateBean bean){
-        UserInfoDto userInfo = getUserInfo();
-        bean.setUpdateUserId(userInfo.getId());
-        bean.setUpdateUserName(userInfo.getRealName());
-        bean.setUpdateTime(new Date(System.currentTimeMillis()));
+        setUpdate(bean);
         return JsonResult.success(resourceService.updateResource(bean));
     }
 }
