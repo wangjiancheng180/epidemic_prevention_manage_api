@@ -68,6 +68,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper,UserInfo> im
     public AuthInfo queryByUsername(String username) {
 
         AuthInfo authInfo = userInfoMapper.queryByUsername(username);
+        if (authInfo==null){
+            return null;
+        }
         Set<Long> roleIds = new HashSet<>();
         for (SysRoleDto  role:authInfo.getRoleDtos()
              ) {

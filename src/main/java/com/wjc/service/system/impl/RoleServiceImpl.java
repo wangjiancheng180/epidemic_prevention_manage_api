@@ -52,7 +52,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper,Role> implements Rol
         role.setCreateUserName(bean.getCreateUserName());
         role.setCreateTime(bean.getCreateTime());
         if(save(role)){
-            roleMapper.contactResourceIds(role.getId(),bean.getResourceIds());
+            if (CollUtil.isNotEmpty(bean.getResourceIds())){
+                roleMapper.contactResourceIds(role.getId(),bean.getResourceIds());
+            }
             return role.getId();
         }
         return -1L;

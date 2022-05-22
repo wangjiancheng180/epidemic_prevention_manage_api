@@ -10,6 +10,7 @@ import com.wjc.service.university.CollegeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -29,18 +30,21 @@ public class CollegeController extends BaseController {
     private CollegeService collegeService;
 
     @GetMapping("/queryCollegeTree")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('queryCollege')")
     @ApiOperation("获取学院树")
     public JsonResult<List<CollegeTree>> queryCollegeTree(){
         return JsonResult.success(collegeService.queryCollegeTree());
     }
 
     @GetMapping("/queryCollegeById")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('queryCollege')")
     @ApiOperation("查询学院通过Id")
     public JsonResult<CollegeDto> queryCollegeById(@RequestParam("id") Long id){
         return JsonResult.success(collegeService.queryCollegeById(id));
     }
 
     @PostMapping("/createCollege")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('createCollege')")
     @ApiOperation("新建学院")
     public JsonResult<Long> createCollege(@RequestBody CollegeCreateBean bean){
         setCreate(bean);
@@ -48,6 +52,7 @@ public class CollegeController extends BaseController {
     }
 
     @PostMapping("/updateCollege")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('updateCollege')")
     @ApiOperation("修改学院")
     public JsonResult<Boolean> updateCollege(@RequestBody CollegeCreateBean  bean){
         setUpdate(bean);
@@ -55,6 +60,7 @@ public class CollegeController extends BaseController {
     }
 
     @DeleteMapping("/deleteCollege")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('deleteCollege')")
     @ApiOperation("删除学院")
     public JsonResult<Boolean> deleteCollege(@RequestParam("id") Long id){
         boolean flag = collegeService.deleteCollege(id);

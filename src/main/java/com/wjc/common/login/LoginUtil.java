@@ -25,5 +25,8 @@ public class LoginUtil {
    //权限不足
    public static int PERMISSONS_ERROR_CODE = 5;
 
+   //验证码错误
+   public static int CAPTCHA_ERROR_CODE = 6;
+
 
 }

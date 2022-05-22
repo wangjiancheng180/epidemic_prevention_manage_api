@@ -11,6 +11,7 @@ import com.wjc.service.university.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,12 +32,14 @@ public class StudentController extends BaseController {
     private StudentService studentService;
 
     @GetMapping("/queryStudentList")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('queryStudent')")
     @ApiOperation("学生信息集合")
     public JsonResult<List<StudentDto>> queryStudentList(){
         return JsonResult.success(studentService.queryStudentList());
     }
 
     @PostMapping("/queryStudentPage")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('queryStudent')")
     @ApiOperation("分页查询")
     public JsonResult<IPage<StudentDto>> queryStudentPage(@RequestBody StudentQueryBean bean){
         return JsonResult.success(studentService.queryStudentPage(bean));
@@ -44,12 +47,14 @@ public class StudentController extends BaseController {
 
 
     @GetMapping("/queryStudentById")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('queryStudent')")
     @ApiOperation("查询学生通过Id")
     public JsonResult<StudentDto> queryStudentById(@RequestParam("id") Long id){
         return JsonResult.success(studentService.queryStudentById(id));
     }
 
     @PostMapping("/createStudent")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('createStudent')")
     @ApiOperation("新建学生")
     public JsonResult<Boolean> createStudent(@RequestBody StudentCreateBean bean){
         setCreate(bean);
@@ -62,6 +67,7 @@ public class StudentController extends BaseController {
     }
 
     @PostMapping("/updateStudent")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('updateStudent')")
     @ApiOperation("更新学生")
     public JsonResult<Boolean> updateStudent(@RequestBody StudentCreateBean bean){
         setUpdate(bean);
@@ -73,6 +79,7 @@ public class StudentController extends BaseController {
     }
 
     @DeleteMapping("/deleteStudent")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('deleteStudent')")
     @ApiOperation("删除学生")
     public JsonResult<Boolean> deleteStudent(@RequestParam("id") Long id){
         boolean flag = studentService.deleteStudent(id);

@@ -12,4 +12,9 @@ public class RedisKey {
 
     //存储用户权限资源信息
     public static  String AUTHIRITY = "authority";
+
+
+    public static String CAPTCHA="captcha";
+
+    public static String CAPTCHA_RESULT = "captchaResult";
 }

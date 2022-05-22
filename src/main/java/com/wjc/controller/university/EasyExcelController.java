@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ public class EasyExcelController extends BaseController {
     private StudentService studentService;
 
     @PostMapping("/exportStudentList")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('exportStudent')")
     @ApiOperation("学生列表导出")
     @SneakyThrows
     public void exportStudentList(HttpServletResponse response, @RequestBody StudentQueryBean bean){
@@ -50,6 +52,7 @@ public class EasyExcelController extends BaseController {
 
     @PostMapping("importStudentexcel")
     @ApiOperation("学生列表导入")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('importStudent')")
     @ResponseBody
     public boolean importStudentexcel(@RequestPart("file") MultipartFile file){
         try{

@@ -33,8 +33,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (authInfo==null){
             //通过用户名查找用户
             authInfo = userInfoService.queryByUsername(userName);
-            //将用户信息放入redis
-            redisTemplate.opsForHash().put(RedisKey.USER_INFO,authInfo.getUsername(),authInfo);
+            if (authInfo!=null){
+                //将用户信息放入redis
+                redisTemplate.opsForHash().put(RedisKey.USER_INFO,authInfo.getUsername(),authInfo);
+            }
         }
 
         LoginUser loginUser = new LoginUser();

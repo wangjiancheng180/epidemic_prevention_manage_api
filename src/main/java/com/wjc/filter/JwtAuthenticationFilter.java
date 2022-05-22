@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import com.wjc.common.login.LoginUtil;
 import com.wjc.common.login.RedisKey;
 import com.wjc.dto.system.AuthInfo;
-import com.wjc.service.system.UserInfoService;
 import com.wjc.util.TokenUtils;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;

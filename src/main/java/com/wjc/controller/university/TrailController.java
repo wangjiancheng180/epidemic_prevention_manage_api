@@ -7,6 +7,7 @@ import com.wjc.service.university.TrailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 ;
 
@@ -28,12 +29,14 @@ public class TrailController extends BaseController {
 
 
     @GetMapping("/queryPosition")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('queryStudent')")
     @ApiOperation("学生最新定位")
     public JsonResult<List<Object>> queryPosition(@RequestParam("studentId") Long studentId){
         return JsonResult.success(trailService.queryPosition(studentId));
     }
 
     @GetMapping("/queryLine")
+    @PreAuthorize("hasRole('super_admin') OR hasAuthority('queryStudent')")
     @ApiOperation("48小时轨迹")
     public JsonResult<List<Object>>queryLine(@RequestParam("studentId") Long studentId){
         return JsonResult.success(trailService.queryLine(studentId));

@@ -1,11 +1,15 @@
 package com.wjc.config;
 
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.wjc.common.JsonResult;
 import com.wjc.common.login.LoginUtil;
 import com.wjc.common.login.RedisKey;
 import com.wjc.dto.system.AuthInfo;
+import com.wjc.exception.CaptchaException;
+import com.wjc.filter.CaptchaFilter;
+import com.wjc.filter.CustomAuthenticationFilter;
 import com.wjc.filter.JwtAuthenticationFilter;
 import com.wjc.service.system.UserInfoService;
 import com.wjc.service.system.impl.UserDetailsServiceImpl;
@@ -32,6 +36,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -63,15 +68,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
+    @Autowired
+    private CaptchaFilter captchaFilter;
+
+
+
 
 
     private static final String[] URL_WHITELISTS ={
-            "/login/**",
+//            "/login/**",
             "/swagger-ui.html",
             "/swagger-resources/**",
             "/webjars/**",
             "/v2/**",
             "/doc.html",
+            "/captcha/**",
             "/trail/simulation"
 
     };
@@ -134,16 +145,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //登录
-                .formLogin()
+                //禁用默认form登录
+                .formLogin().disable();
                 //处理登录请求的url
-                .loginProcessingUrl("/login")
-                //登录成功处理
-                .successHandler(successHandler())
-                //登录失败处理
-                .failureHandler(failureHandler())
+//                .loginProcessingUrl("/login")
+//                //登录成功处理
+//                .successHandler(successHandler())
+//                //登录失败处理
+//                .failureHandler(failureHandler())
 
-                .and()
+//                .and()
+                http
                 //设置访问被拒绝后的事件（用来处理权限不足时的返回）
                 .exceptionHandling()
                 //未登录访问资源
@@ -152,6 +164,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .accessDeniedHandler(accessDeniedHandler())
                 //将我们自定义的token过滤器按照一定顺序加入过滤器链
                 .and()
+                .addFilterAt(customAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilter(jwtAuthenticationFilter());
 
            //关闭默认的httpBasic()的认证方式
@@ -160,6 +174,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     }
 
+
+    @Bean
+    public CustomAuthenticationFilter customAuthenticationFilter () throws Exception {
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
+        //加入登录成功处理器
+        filter.setAuthenticationSuccessHandler(successHandler());
+        //加入登录失败处理器
+        filter.setAuthenticationFailureHandler(failureHandler());
+
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
+    }
 
 
 
@@ -173,6 +199,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                 httpServletResponse.setCharacterEncoding("utf-8");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
+                //这里需要将之前图片验证给删除了
+                String sessionId = httpServletRequest.getRequestedSessionId();
+                if (StrUtil.isNotEmpty(sessionId)){
+                    redisTemplate.opsForHash().delete(RedisKey.CAPTCHA_RESULT,sessionId);
+                }
                 //取出此时登录的用户名
                 String username = authentication.getName();
                 AuthInfo authInfo = (AuthInfo) redisTemplate.opsForHash().get(RedisKey.USER_INFO, username);
@@ -200,6 +231,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
      *登录失败处理器
      * @return
      */
+    @Bean
     public AuthenticationFailureHandler failureHandler(){
         return new AuthenticationFailureHandler() {
             @Override
@@ -207,7 +239,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 httpServletResponse.setCharacterEncoding("utf-8");
                 httpServletResponse.setContentType("application/json;charset=utf-8");
                 PrintWriter writer = httpServletResponse.getWriter();
-                if(e.getClass().equals(UsernameNotFoundException.class)){
+                if(e.getClass().equals(CaptchaException.class)){
+                    writer.println(JSONUtil.toJsonStr(JsonResult.failure(LoginUtil.CAPTCHA_ERROR_CODE,e.getMessage())));
+                }
+                else if(e.getClass().equals(UsernameNotFoundException.class)){
                     //此时异常属于用户名不存在
                     writer.println(JSONUtil.toJsonStr(JsonResult.failure(LoginUtil.USERNAME_NOT_FOUND_CODE,"用户名不存在！")));
                 }else {
