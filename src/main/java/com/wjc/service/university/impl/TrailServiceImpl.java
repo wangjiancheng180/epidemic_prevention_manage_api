@@ -1,6 +1,7 @@
 package com.wjc.service.university.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.wjc.param.visualization.Spot;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.Point;
@@ -115,6 +116,14 @@ public class TrailServiceImpl implements TrailService{
                         obj = clasz.newInstance();
                         for(int i=0;i<fieldSize;i++){
                             String fieldName = columns.get(i);
+                            //解决驼峰映射
+                            if(fieldName.contains("_")){
+                                int index = fieldName.indexOf("_");
+                                String s1 = fieldName.substring(0, index);
+                                String s2 = fieldName.substring(index + 1);
+                                String s3 = s2.substring(0, 1).toUpperCase().concat(s2.substring((1)));
+                                fieldName = s1.concat(s3);
+                            }
                             Field field = clasz.getDeclaredField(fieldName);
                             field.setAccessible(true);
                             Class<?> type = field.getType();

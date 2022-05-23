@@ -12,7 +12,7 @@ import org.influxdb.annotation.Measurement;
 @Measurement(name = "trail")
 public class Spot {
 
-    @Column(name = "studentId",tag = true)
+    @Column(name = "student_id",tag = true)
     private String studentId;
 
     @Column(name = "lng")
