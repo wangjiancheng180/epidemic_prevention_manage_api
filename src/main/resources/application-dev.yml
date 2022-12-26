@@ -58,8 +58,8 @@ token:
 #iot配置
 iot:
   amq:
-    accessKey: LTAI5tK1rXqPWBQHSreY7jtc
-    accessSecret: twM2zWyl0CTvQKi1kOLoyOROKLLjCO
+    accessKey: xxxxxxxxxxxxx
+    accessSecret: xxxxxxxxxxxx
     consumerGroupId: DEFAULT_GROUP
     iotInstanceId: iot-06z00bk0x41tw1q
     clientId: lololo
