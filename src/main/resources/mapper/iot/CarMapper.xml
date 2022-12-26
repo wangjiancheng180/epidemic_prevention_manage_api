@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjc.mapper.iot.CarMapper">
+  <resultMap id="BaseResultMap" type="com.wjc.enetity.iot.Car">
+    <!--@mbg.generated-->
+    <!--@Table car-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="car_number" jdbcType="VARCHAR" property="carNumber" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="product_key" jdbcType="VARCHAR" property="productKey" />
+    <result column="device_secret" jdbcType="VARCHAR" property="deviceSecret" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, car_number, device_name, product_key, device_secret, `type`, create_user_id, 
+    create_user_name, create_time, update_user_id, update_user_name, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from car
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from car
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="create" parameterType="com.wjc.enetity.iot.Car">
+ insert into car (car_number, device_name, product_key, device_secret, type,access_network,disabled, create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time )
+ values (#{car.carNumber}, #{car.deviceName}, #{car.productKey}, #{car.deviceSecret}, #{car.type},#{car.accessNetwork},#{car.disabled}, #{car.createUserId}, #{car.createUserName}, #{car.createTime}, null,null, null )
+  </insert>
+  <insert id="insertSelective" parameterType="com.wjc.enetity.iot.Car">
+    <!--@mbg.generated-->
+    insert into car
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="carNumber != null">
+        car_number,
+      </if>
+      <if test="deviceName != null">
+        device_name,
+      </if>
+      <if test="productKey != null">
+        product_key,
+      </if>
+      <if test="deviceSecret != null">
+        device_secret,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="accessNetwork != null">
+        `access_network`,
+      </if>
+      <if test="disabled != null">
+        `disabled`,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createUserName != null">
+        create_user_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="carNumber != null">
+        #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null">
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="productKey != null">
+        #{productKey,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceSecret != null">
+        #{deviceSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="accessNetwork != null">
+        #{accessNetwork,jdbcType=INTEGER},
+      </if>
+      <if test="disabled != null">
+        #{disabled,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=BIGINT},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wjc.enetity.iot.Car">
+    <!--@mbg.generated-->
+    update car
+    <set>
+      <if test="carNumber != null">
+        car_number = #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null">
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="productKey != null">
+        product_key = #{productKey,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceSecret != null">
+        device_secret = #{deviceSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=BIGINT},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wjc.enetity.iot.Car">
+    <!--@mbg.generated-->
+    update car
+    set car_number = #{carNumber,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      product_key = #{productKey,jdbcType=VARCHAR},
+      device_secret = #{deviceSecret,jdbcType=VARCHAR},
+      `type` = #{type,jdbcType=VARCHAR},
+      create_user_id = #{createUserId,jdbcType=BIGINT},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=BIGINT},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

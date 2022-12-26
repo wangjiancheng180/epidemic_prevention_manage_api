@@ -55,5 +55,15 @@ token:
   secret: wjc-key #令牌密钥
   expireTime: 10080 #令牌有效期 默认10080分钟 7天
 
+#iot配置
+iot:
+  amq:
+    accessKey: LTAI5tK1rXqPWBQHSreY7jtc
+    accessSecret: twM2zWyl0CTvQKi1kOLoyOROKLLjCO
+    consumerGroupId: DEFAULT_GROUP
+    iotInstanceId: iot-06z00bk0x41tw1q
+    clientId: lololo
+    host: iot-06z00bk0x41tw1q.amqp.iothub.aliyuncs.com
+
 
 

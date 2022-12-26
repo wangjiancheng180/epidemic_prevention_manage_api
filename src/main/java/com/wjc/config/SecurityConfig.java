@@ -83,7 +83,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/v2/**",
             "/doc.html",
             "/captcha/**",
-            "/trail/simulation"
+            "/trail/simulation",
+            "/device/**",
+            "/websocket/**"
 
     };
 

@@ -41,8 +41,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
                 this.setDetails(request, authRequest);
                 return this.getAuthenticationManager().authenticate(authRequest);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                //这里需要捕获全局异常，因为登录要是没有进行图片滑动验证，就会抛出异常，这时候request的输入流会关闭，导致hutool宝IORuntimeException异常
                 return this.getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken("",""));
             }
         }

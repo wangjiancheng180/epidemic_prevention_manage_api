@@ -26,7 +26,7 @@ public class InfluxdbConfig {
     @Value("${spring.influx.database}")
     private String database;
 
-    @Bean
+    @Bean(name = "influxdb")
     public InfluxDB influxdb(){
         InfluxDB influxDB = InfluxDBFactory.connect(influxDBUrl, userName, password);
         try{
@@ -36,7 +36,7 @@ public class InfluxdbConfig {
              * point的个数和时间是联合使用的，如果满10条或者60 * 1000毫秒 //这里为了看成果设置偏小
              * 满足任何一个条件就会发送一次写的请求。
              */
-            influxDB.setDatabase(database).enableBatch(10,1000 * 1, TimeUnit.MILLISECONDS);
+            influxDB.setDatabase(database).enableBatch(10,1000 * 60, TimeUnit.MILLISECONDS);
         }catch (Exception e){
             e.printStackTrace();
         }
